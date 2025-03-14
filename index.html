@@ -1,0 +1,363 @@
+import React, { useState, useEffect } from 'react';
+import { Mail, Inbox, Star, Clock, Send, Archive, Trash, Menu, Search } from 'lucide-react';
+
+const emails = {
+  "emails": [
+    {
+      "from": "jan.levinson@dundermifflin.com",
+      "subject": "RE: Quarterly Performance Review",
+      "date": "2025-03-01 09:15:23",
+      "content": "Michael, Your branch's numbers are down 12% this quarter. I need a detailed action plan by EOD tomorrow. And please stop sending me 'World's Best Boss' selfies. -Jan"
+    },
+    {
+      "from": "dwight.schrute@dundermifflin.com",
+      "subject": "URGENT: Security Threat Level Midnight",
+      "date": "2025-03-01 10:23:45",
+      "content": "Michael, I have reason to believe Jim has compromised our printer network by replacing all paper with slightly smaller sheets (0.2mm difference). Request permission to initiate full-scale investigation. Assistant (to the) Regional Manager, Dwight K. Schrute"
+    },
+    {
+      "from": "toby.flenderson@dundermifflin.com",
+      "subject": "Mandatory HR Training Reminder",
+      "date": "2025-03-01 11:05:12",
+      "content": "Hi Michael, This is your third reminder about the mandatory sensitivity training session tomorrow at 2 PM. Attendance is required by corporate policy. Please confirm your attendance. -Toby, HR"
+    },
+    {
+      "from": "creed.bratton@dundermifflin.com",
+      "subject": "www.creedthoughts.gov.www\\creedthoughts",
+      "date": "2025-03-01 11:42:33",
+      "content": "Boss, if anyone asks, I was definitely here yesterday. Also, do you know where I can find a new identity? Asking for a friend. -CB"
+    },
+    {
+      "from": "conferences@chilis.com",
+      "subject": "Your Chili's Rewards Status: Gold Member",
+      "date": "2025-03-01 12:30:15",
+      "content": "Congratulations Michael! You've reached Gold Status at Chili's! Enjoy unlimited free appetizers during your next Small Businessmen's Lunch. Terms and conditions apply."
+    },
+    {
+      "from": "community.theatre@scranton.org",
+      "subject": "Cast List: Romeo & Juliet",
+      "date": "2025-03-02 13:45:22",
+      "content": "Dear Mr. Scott, Thank you for your enthusiastic audition. While we cannot offer you the role of Romeo, we would be delighted to have you play Citizen #3. Rehearsals begin next Tuesday."
+    },
+    {
+      "from": "ryan.howard@dundermifflin.com",
+      "subject": "WUPHF.com Investment Opportunity",
+      "date": "2025-03-02 14:20:55",
+      "content": "Michael, WUPHF.com is ready for the next phase of investment. This is your chance to get in on the ground floor of Web 3.0. Minimum investment: $10,000. Think about it. -Ryan (Sent from my iPhone)"
+    },
+    {
+      "from": "pam.beesly@dundermifflin.com",
+      "subject": "Your 2PM Client Meeting",
+      "date": "2025-03-02 13:55:18",
+      "content": "Michael, Just a reminder that Mr. Thompson from Blue Cross is coming at 2PM. I've put the client folder on your desk. Please don't do the Prison Mike character this time. -Pam"
+    },
+    {
+      "from": "kelly.kapoor@dundermifflin.com",
+      "subject": "OMG EMERGENCY!!!",
+      "date": "2025-03-03 15:10:44",
+      "content": "MICHAEL!!! Ryan just changed his Facebook status to 'it's complicated' and I need to take the rest of the day off for a personal emergency! This is literally worse than when Beyoncé broke up with Destiny's Child!"
+    },
+    {
+      "from": "newsletter@sbpaper.org",
+      "subject": "Scranton's Small Business Owner of the Year Nominations",
+      "date": "2025-03-03 16:05:33",
+      "content": "Dear Mr. Scott, We received your 15 self-nominations for Small Business Owner of the Year. Please note that multiple submissions do not increase chances of winning. Voting closes Friday."
+    },
+    {
+      "from": "david.wallace@dundermifflin.com",
+      "subject": "Annual Branch Performance Review",
+      "date": "2025-03-04 08:30:45",
+      "content": "Michael, I'll be visiting Scranton next Thursday to review branch performance and discuss new sales targets. Please prepare a short presentation on your team's strategies for boosting paper sales this quarter. No costumes or characters this time. -David Wallace, CFO"
+    },
+    {
+      "from": "stanley.hudson@dundermifflin.com",
+      "subject": "Vacation Request",
+      "date": "2025-03-05 09:15:22",
+      "content": "Michael, I am submitting my vacation request for April 10-17. I will be in Florida visiting my ex-wife's sister. This is not up for discussion. -Stanley Hudson"
+    },
+    {
+      "from": "jim.halpert@dundermifflin.com",
+      "subject": "Blue Cross Account Opportunity",
+      "date": "2025-03-06 10:23:18",
+      "content": "Hey Michael, Blue Cross is looking to expand their paper supply contract. I think we can increase our current deal by 20% if we move quickly. Let me know if you want me to take the lead on this. -Jim"
+    },
+    {
+      "from": "angela.martin@dundermifflin.com",
+      "subject": "Expense Report Discrepancies",
+      "date": "2025-03-06 11:05:49",
+      "content": "Michael, There are several concerning items on your recent expense report, including $126.32 at 'Spencer's Gifts' and $84.99 for something called 'World's Best Boss Trophy (Replacement)'. Please provide receipts and business justification by EOD. -Angela Martin, Accounting"
+    },
+    {
+      "from": "phyllis.vance@dundermifflin.com",
+      "subject": "Customer Complaint: Vance Refrigeration",
+      "date": "2025-03-07 11:47:33",
+      "content": "Michael, Bob said his last paper order came in with wrinkled corners. He's not angry, but he'd appreciate some care in packaging next time. Also, we're having a barbecue on Saturday if you'd like to come. -Phyllis"
+    },
+    {
+      "from": "newsletter@serenitybyjan.com",
+      "subject": "Spring Candle Collection Launch",
+      "date": "2025-03-07 12:10:59",
+      "content": "Dear Valued Customer, Serenity by Jan is proud to announce our Spring Scent Collection! Featuring new fragrances like 'Morning Deposition' and 'Bonfire Retreat'. Use code MICHAELSCOTT for 5% off your order. -Jan Levinson, Founder"
+    },
+    {
+      "from": "oscar.martinez@dundermifflin.com",
+      "subject": "Budget Allocation Review",
+      "date": "2025-03-08 13:22:41",
+      "content": "Michael, I've noticed that 40% of our supply budget was spent on 'team building materials' last month. We need to discuss more efficient allocation of resources. Also, a pinata is not a legitimate office expense. -Oscar"
+    },
+    {
+      "from": "kevin.malone@dundermifflin.com",
+      "subject": "Chili Cookoff Committee",
+      "date": "2025-03-09 14:05:36",
+      "content": "Michael, The annual Scranton Chili Cookoff is next month. Want to join the committee with me? We get to taste test everything. It's basically the best job ever. -Kevin"
+    },
+    {
+      "from": "andy.bernard@dundermifflin.com",
+      "subject": "Cornell Alumni Networking Event",
+      "date": "2025-03-10 14:33:52",
+      "content": "Hey Boss, The Cornell Alumni Association is having a networking event in Scranton next week. Great opportunity to meet some real Ivy Leaguers! I can introduce you as my superior if you'd like to attend. Ri-dit-dit-di-doo! -Andy Bernard, '95"
+    },
+    {
+      "from": "meredith.palmer@dundermifflin.com",
+      "subject": "Supplier Discount Arrangement",
+      "date": "2025-03-11 15:17:29",
+      "content": "Michael, I negotiated an additional 10% discount with our Hammermill supplier. Don't ask how. Just know that I need next Friday off and no questions asked. -Meredith"
+    },
+    {
+      "from": "erin.hannon@dundermifflin.com",
+      "subject": "Phone Messages",
+      "date": "2025-03-12 15:45:13",
+      "content": "Hi Michael! Here are your phone messages: 1. Someone called Todd Packer said he has a 'legendary story' for you 2. Your mom called about dinner on Sunday 3. A man called about your car's extended warranty PS: I answered the phone 'Dunder Mifflin, this is the office of Michael Scott, World's Best Boss' like you asked!"
+    },
+    {
+      "from": "membership@improv101.com",
+      "subject": "Improv Workshop: Advanced Character Creation",
+      "date": "2025-03-13 16:10:24",
+      "content": "Dear Improviser, Your interest in our Advanced Character Workshop is appreciated! However, after reviewing your audition tape, we recommend starting with our Beginners class instead. No refunds available for deposits. -Carol, Improv 101"
+    },
+    {
+      "from": "gabe.lewis@sabre.com",
+      "subject": "Sabre Product Integration Deadline",
+      "date": "2025-03-14 16:33:52",
+      "content": "Michael, This is a reminder that all Dunder Mifflin branches must complete Sabre printer integration by the end of this month. Please schedule your team training session ASAP. Corporate compliance is non-negotiable. -Gabe Lewis, Sabre Liaison"
+    },
+    {
+      "from": "holly.flax@dundermifflin.com",
+      "subject": "HR Policy Updates",
+      "date": "2025-03-15 17:01:39",
+      "content": "Hi Michael, Corporate has issued some new HR policies that I need to review with the staff next week. Also, I found your Yoda action figure behind the breakroom vending machine. It's in my desk drawer whenever you want to pick it up. :) -Holly"
+    },
+    {
+      "from": "crm@chilisrewards.com",
+      "subject": "Your Reservation Confirmation",
+      "date": "2025-03-16 17:22:47",
+      "content": "Awesome Sauce! Your reservation at Chili's Bar & Grill for tomorrow at 7:30 PM has been confirmed! Your Reward ID #MI83752S will earn double points on all appetizers during this visit. Feel God? We feel good! -The Chili's Team"
+    },
+    {
+      "from": "newsletter@dundermifflin.com",
+      "subject": "Dunder Mifflin Monthly: CEO Announcement",
+      "date": "2025-03-17 17:45:06",
+      "content": "TO ALL STAFF: We are pleased to announce Robert California as our new Chief Executive Officer, effective immediately. Regional managers will be contacted directly for transition meetings. A company-wide vision statement will follow. -Corporate Communications"
+    },
+    {
+      "from": "kelly.kapoor@dundermifflin.com",
+      "subject": "Re: Office Party Theme Ideas",
+      "date": "2025-03-18 18:05:33",
+      "content": "Michael!!! We ABSOLUTELY CANNOT do a 'Kardashians vs Jenners' theme for the office party! HR would literally die! But if we did, I call being Kim because I have the most followers in the office and Ryan could be my Kanye even though we're on a break but don't tell him I said that!!!"
+    },
+    {
+      "from": "darryl.philbin@dundermifflin.com",
+      "subject": "Warehouse Safety Concerns",
+      "date": "2025-03-19 18:30:12",
+      "content": "Michael, We need to talk about warehouse safety protocols. The forklift is not a 'parade float' and you cannot drive it while wearing a cape. Also, the warehouse guys are still waiting on those new safety boots you promised last month. -Darryl"
+    },
+    {
+      "from": "nard_dog_acappella@cornell.edu",
+      "subject": "Here Comes Treble Reunion Tour",
+      "date": "2025-03-19 19:15:27",
+      "content": "Michael, My old Cornell a cappella group 'Here Comes Treble' is doing a reunion tour and I pulled some strings to get them to perform at Dunder Mifflin! All I need is approval for the auditorium rental fee ($350) and a commitment that everyone will attend. This is going to be epic! -Andy Bernard"
+    },
+    {
+      "from": "support@wuphf.com",
+      "subject": "Your WUPHF.com Account Status: URGENT ACTION REQUIRED",
+      "date": "2025-03-20 20:40:59",
+      "content": "ATTENTION WUPHF USER: Your premium subscription to WUPHF.com requires immediate payment of $49.99 to avoid service interruption. Maintain your ability to simultaneously message people across all platforms instantly! -Ryan Howard, Founder & CEO"
+    }
+  ]
+};
+
+const EmailClient = () => {
+  const [selectedEmail, setSelectedEmail] = useState(emails.emails[0]);
+  const [menuOpen, setMenuOpen] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredEmails, setFilteredEmails] = useState(emails.emails);
+
+  // Filter emails when search query changes
+  useEffect(() => {
+    if (searchQuery.trim() === "") {
+      setFilteredEmails(emails.emails);
+    } else {
+      const query = searchQuery.toLowerCase();
+      const results = emails.emails.filter(email => 
+        email.from.toLowerCase().includes(query) || 
+        email.subject.toLowerCase().includes(query) || 
+        email.content.toLowerCase().includes(query)
+      );
+      setFilteredEmails(results);
+      
+      // If we have results and the selected email is no longer in filtered list,
+      // update the selected email to the first result
+      if (results.length > 0 && !results.includes(selectedEmail)) {
+        setSelectedEmail(results[0]);
+      }
+    }
+  }, [searchQuery, selectedEmail]);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('en-US', { 
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: true 
+    });
+  };
+
+  const formatSender = (email) => {
+    return email.split('@')[0].split('.').map(word => 
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ');
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  return (
+    <div className="flex h-screen bg-gray-100">
+      {/* Sidebar */}
+      <div className={`${menuOpen ? 'w-64' : 'w-16'} bg-white shadow-md transition-all duration-300`}>
+        <div className="p-4 flex items-center">
+          <button 
+            onClick={() => setMenuOpen(!menuOpen)} 
+            className="p-2 hover:bg-gray-100 rounded-full"
+          >
+            <Menu className="w-6 h-6 text-gray-600" />
+          </button>
+          {menuOpen && (
+            <div className="ml-2 w-48">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 100">
+                <text x="10" y="35" fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="32" fill="black">DUNDER</text>
+                <text x="10" y="70" fontFamily="Arial Black, sans-serif" fontWeight="900" fontSize="32" fill="black">MIFFLIN</text>
+                <text x="10" y="90" fontFamily="Arial, sans-serif" fontSize="12" fill="black">PAPER COMPANY</text>
+              </svg>
+            </div>
+          )}
+        </div>
+        
+        <div className="px-2">
+          {[
+            { icon: Inbox, label: 'Inbox', count: filteredEmails.length },
+            { icon: Star, label: 'Starred', count: 4 },
+            { icon: Clock, label: 'Snoozed', count: 0 },
+            { icon: Send, label: 'Sent', count: 0 },
+            { icon: Archive, label: 'Archive', count: 0 },
+            { icon: Trash, label: 'Trash', count: 0 },
+          ].map(({ icon: Icon, label, count }) => (
+            <button
+              key={label}
+              className="w-full flex items-center p-2 mb-1 rounded-2xl hover:bg-gray-100"
+            >
+              <Icon className="w-5 h-5 text-gray-600" />
+              {menuOpen && (
+                <>
+                  <span className="ml-3 text-gray-700">{label}</span>
+                  {count > 0 && (
+                    <span className="ml-auto text-sm text-gray-500">{count}</span>
+                  )}
+                </>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Email List */}
+      <div className="flex-1 flex flex-col min-w-0">
+        <div className="bg-white shadow-sm p-2">
+          <div className="flex items-center bg-gray-100 rounded-lg px-4 py-2">
+            <Search className="w-5 h-5 text-gray-500" />
+            <input
+              type="text"
+              placeholder="Search mail"
+              className="ml-2 bg-transparent border-none outline-none flex-1"
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+            {searchQuery && (
+              <button 
+                onClick={() => setSearchQuery("")}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ×
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="flex flex-1 overflow-hidden">
+          <div className="w-96 border-r overflow-y-auto">
+            {filteredEmails.length === 0 ? (
+              <div className="p-6 text-center text-gray-500">
+                No emails match your search
+              </div>
+            ) : (
+              filteredEmails.map((email, index) => (
+                <div
+                  key={index}
+                  onClick={() => setSelectedEmail(email)}
+                  className={`p-4 border-b cursor-pointer hover:bg-gray-50 ${
+                    selectedEmail === email ? 'bg-blue-50' : ''
+                  }`}
+                >
+                  <div className="flex justify-between items-start mb-1">
+                    <span className="font-semibold">{formatSender(email.from)}</span>
+                    <span className="text-sm text-gray-500">{formatDate(email.date)}</span>
+                  </div>
+                  <div className="font-medium text-sm mb-1 truncate">{email.subject}</div>
+                  <div className="text-sm text-gray-600 truncate">{email.content}</div>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Email Content */}
+          <div className="flex-1 overflow-y-auto p-6">
+            {selectedEmail ? (
+              <div>
+                <h2 className="text-2xl font-semibold mb-4">{selectedEmail.subject}</h2>
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <div className="font-medium">{formatSender(selectedEmail.from)}</div>
+                    <div className="text-sm text-gray-600">{selectedEmail.from}</div>
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    {new Date(selectedEmail.date).toLocaleString()}
+                  </div>
+                </div>
+                <div className="text-gray-800 whitespace-pre-line">
+                  {selectedEmail.content}
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center h-full text-gray-500">
+                No email selected
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default EmailClient;
